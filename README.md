@@ -25,3 +25,17 @@ jorcd feed set-feed {name} {api-link} {interval-seconds}
 jorcd start
 ```
 
+For example, if we wanted an oracle to update the price of Jackal Tokens from Osmosis every 10 seconds, we could do so like this.
+```sh
+jorcd client config chain-id jackal-1
+
+jorcd client gen-key
+
+jorcd feed create jklprice
+
+jorcd feed set-feed jklprice https://api-osmosis.imperator.co/tokens/v2/price/jkl 10
+
+jorcd start
+
+```
+
