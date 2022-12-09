@@ -2,6 +2,10 @@ package server
 
 import (
 	"fmt"
+	"github.com/JackalLabs/jackal-oracle/jorc/crypto"
+	oracletypes "github.com/jackalLabs/canine-chain/x/oracle/types"
+	"io"
+	"net/http"
 	"runtime"
 	"time"
 
@@ -12,11 +16,69 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func RunOracle(db *leveldb.DB, ctx *utils.Context) {
-	for {
-		fmt.Println("Oracle!")
+func RunOracle(db *leveldb.DB, ctx *client.Context, cmd *cobra.Command) {
+	interval, err := db.Get([]byte("interval"), nil)
+	if err != nil {
+		fmt.Println(err)
+		fmt.Println("You most likely haven't ran `jorcd set-feed` yet.")
+		return
+	}
 
-		time.Sleep(time.Second * 10)
+	t, err := time.ParseDuration(fmt.Sprintf("%ss", string(interval)))
+	if err != nil {
+		panic(err)
+	}
+
+	for {
+		address, err := crypto.GetAddress(*ctx)
+		if err != nil {
+			panic(err)
+		}
+
+		res, err := db.Get([]byte("api"), nil)
+		if err != nil {
+			fmt.Println(err)
+			fmt.Println("You most likely haven't ran `jorcd set-feed` yet.")
+			return
+		}
+
+		name, err := db.Get([]byte("name"), nil)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		r, err := http.Get(string(res))
+		if err != nil {
+			fmt.Println(err)
+			fmt.Println("Missed a GET, will try again.")
+			continue
+		}
+
+		defer r.Body.Close()
+
+		b, err := io.ReadAll(r.Body)
+		// b, err := ioutil.ReadAll(resp.Body)  Go.1.15 and earlier
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		msg := oracletypes.NewMsgUpdateFeed(
+			address,
+			string(name),
+			string(b),
+		)
+		if err := msg.ValidateBasic(); err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		_, err = utils.SendTx(*ctx, cmd.Flags(), msg)
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		time.Sleep(t)
 	}
 }
 
@@ -35,9 +97,15 @@ func StartOracle(cmd *cobra.Command) {
 		return
 	}
 
-	ctx := utils.GetServerContextFromCmd(cmd)
+	ctx, err := client.GetClientTxContext(cmd)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 
-	go RunOracle(db, ctx)
+	fmt.Println("Started Jackal Oracle 👁️")
+
+	go RunOracle(db, &ctx, cmd)
 
 	runtime.Goexit()
 

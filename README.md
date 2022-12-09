@@ -14,14 +14,14 @@ This assumes you have either already set up a node or are using another RPC prov
 You must send tokens to the address that is generated from `gen-key` before starting your node.
 
 ```sh
-jorc client config chain-id {current-chain-id}
+jorcd client config chain-id {current-chain-id}
 
-jorc client gen-key
+jorcd client gen-key
 
-jorc feed create {name}
+jorcd feed create {name}
 
-jorc feed set-feed {name} {api-link} {interval-seconds}
+jorcd feed set-feed {name} {api-link} {interval-seconds}
 
-jorc start
+jorcd start
 ```
 

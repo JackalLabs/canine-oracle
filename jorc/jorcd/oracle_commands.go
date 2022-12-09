@@ -4,6 +4,8 @@ import (
 	"bufio"
 	"context"
 	"fmt"
+	"github.com/JackalLabs/jackal-oracle/jorc/utils"
+	"github.com/syndtr/goleveldb/leveldb"
 
 	"github.com/cosmos/cosmos-sdk/version"
 
@@ -20,6 +22,8 @@ import (
 	stortypes "github.com/jackalLabs/canine-chain/x/storage/types"
 	"github.com/spf13/cobra"
 	tmcli "github.com/tendermint/tendermint/libs/cli"
+
+	oracletypes "github.com/jackalLabs/canine-chain/x/oracle/types"
 )
 
 func StartServerCommand() *cobra.Command {
@@ -38,19 +42,95 @@ func StartServerCommand() *cobra.Command {
 	return cmd
 }
 
-func InitOracleCommand() *cobra.Command {
+func CreateOracleCommand() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "init",
-		Short: "Init jackal oracle",
-		Long:  `Initialize the Jackal Oracle with new settings.`,
-		Args:  cobra.ExactArgs(0),
+		Use:   "create [name]",
+		Short: "Create jackal oracle",
+		Long:  `Create the Jackal Oracle with new settings.`,
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			server.StartOracle(cmd)
-			return nil
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			address, err := crypto.GetAddress(clientCtx)
+			if err != nil {
+				return err
+			}
+
+			msg := oracletypes.NewMsgCreateFeed(
+				address,
+				args[0],
+			)
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+
+			_, err = utils.SendTx(clientCtx, cmd.Flags(), msg)
+			return err
 		},
 	}
 
 	AddTxFlagsToCmd(cmd)
+	return cmd
+}
+
+func SetOracleCommand() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "set-feed [name] [api] [interval]",
+		Short: "Set jackal oracle settings",
+		Long:  `Set the Jackal Oracle's settings for runtime execution.`,
+		Args:  cobra.ExactArgs(3),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			path := utils.GetDataPath(clientCtx)
+
+			db, dberr := leveldb.OpenFile(path, nil)
+			if dberr != nil {
+				return dberr
+			}
+
+			err = db.Put([]byte("name"), []byte(args[0]), nil)
+			if err != nil {
+				return err
+			}
+
+			err = db.Put([]byte("api"), []byte(args[1]), nil)
+			if err != nil {
+				return err
+			}
+
+			err = db.Put([]byte("interval"), []byte(args[2]), nil)
+			if err != nil {
+				return err
+			}
+
+			return nil
+
+		},
+	}
+
+	AddTxFlagsToCmd(cmd)
+	return cmd
+}
+
+func FeedCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "feed",
+		Short: "Oracle feed commands",
+		Long:  `The sub-menu for Jackal Oracle feed commands.`,
+	}
+
+	cmd.AddCommand(
+		CreateOracleCommand(),
+		SetOracleCommand(),
+	)
+
 	return cmd
 }
 
