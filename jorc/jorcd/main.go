@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/JackalLabs/jackal-provider/jorc/types"
+	"github.com/JackalLabs/jackal-oracle/jorc/types"
 )
 
 func main() {

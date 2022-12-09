@@ -4,7 +4,7 @@ VERSION := $(shell echo $(shell git describe --tags) | sed 's/^v//')
 COMMIT := $(shell git log -1 --format='%H')
 LEDGER_ENABLED ?= true
 
-HTTPS_GIT := https://github.com/jackalLabs/canine-provider.git
+HTTPS_GIT := https://github.com/jackalLabs/canine-oracle.git
 
 export GO111MODULE = on
 
@@ -47,8 +47,8 @@ build_tags_comma_sep := $(subst $(empty),$(comma),$(build_tags))
 
 # process linker flags
 
-ldflags = -X github.com/cosmos/cosmos-sdk/version.Name=jprov \
-		  -X github.com/cosmos/cosmos-sdk/version.AppName=jprovd \
+ldflags = -X github.com/cosmos/cosmos-sdk/version.Name=jorc \
+		  -X github.com/cosmos/cosmos-sdk/version.AppName=jorcd \
 		  -X github.com/cosmos/cosmos-sdk/version.Version=$(VERSION) \
 		  -X github.com/cosmos/cosmos-sdk/version.Commit=$(COMMIT) \
 		  -X "github.com/cosmos/cosmos-sdk/version.BuildTags=$(build_tags_comma_sep)"
@@ -73,7 +73,7 @@ build: go.sum
 ifeq ($(OS),Windows_NT)
 	exit 1
 else
-	go build -mod=readonly $(BUILD_FLAGS) -o build/jprovd ./jprov/jprovd
+	go build -mod=readonly $(BUILD_FLAGS) -o build/jorcd ./jorc/jorcd
 endif
 
 install: go.sum

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/JackalLabs/jackal-provider/jorc/crypto"
+	"github.com/JackalLabs/jackal-oracle/jorc/crypto"
 	"github.com/cosmos/cosmos-sdk/client"
 	txns "github.com/cosmos/cosmos-sdk/client/tx"
 	sdk "github.com/cosmos/cosmos-sdk/types"

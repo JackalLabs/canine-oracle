@@ -4,10 +4,7 @@ go 1.19
 
 require (
 	github.com/cosmos/cosmos-sdk v0.45.11
-	github.com/huin/goupnp v1.0.3
 	github.com/jackalLabs/canine-chain v1.2.0-alpha.7
-	github.com/julienschmidt/httprouter v1.3.0
-	github.com/rs/cors v1.8.2
 	github.com/rs/zerolog v1.27.0
 	github.com/spf13/cobra v1.6.1
 	github.com/spf13/pflag v1.0.5
@@ -15,8 +12,6 @@ require (
 	github.com/stretchr/testify v1.8.1
 	github.com/syndtr/goleveldb v1.0.1-0.20210819022825-2ae1ddf74ef7
 	github.com/tendermint/tendermint v0.34.23
-	github.com/wealdtech/go-merkletree v1.0.0
-	golang.org/x/sync v0.1.0
 )
 
 require (
@@ -111,6 +106,7 @@ require (
 	github.com/rakyll/statik v0.1.7 // indirect
 	github.com/rcrowley/go-metrics v0.0.0-20201227073835-cf1acfcdf475 // indirect
 	github.com/regen-network/cosmos-proto v0.3.1 // indirect
+	github.com/rs/cors v1.8.2 // indirect
 	github.com/sasha-s/go-deadlock v0.3.1 // indirect
 	github.com/spf13/afero v1.9.2 // indirect
 	github.com/spf13/cast v1.5.0 // indirect
@@ -120,7 +116,8 @@ require (
 	github.com/tendermint/crypto v0.0.0-20191022145703-50d29ede1e15 // indirect
 	github.com/tendermint/go-amino v0.16.0 // indirect
 	github.com/tendermint/tm-db v0.6.7 // indirect
-	github.com/zondax/hid v0.9.0 // indirect
+	github.com/wealdtech/go-merkletree v1.0.0 // indirect
+	github.com/zondax/hid v0.9.1 // indirect
 	github.com/zondax/ledger-go v0.13.0 // indirect
 	go.etcd.io/bbolt v1.3.6 // indirect
 	golang.org/x/crypto v0.1.0 // indirect

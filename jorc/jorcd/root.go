@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/JackalLabs/jackal-provider/jorc/types"
-	"github.com/JackalLabs/jackal-provider/jorc/utils"
+	"github.com/JackalLabs/jackal-oracle/jorc/types"
+	"github.com/JackalLabs/jackal-oracle/jorc/utils"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 
@@ -38,8 +38,8 @@ func NewRootCmd() *cobra.Command {
 
 	rootCmd := &cobra.Command{
 		Use:   "jorcd",
-		Short: "Provider Daemon (server)",
-		Long:  "Jackal Lab's implimentation of a Jackal Protocol Storage Provider system.",
+		Short: "Oracle Daemon (server)",
+		Long:  "Jackal Lab's implimentation of a Jackal Protocol Oracle system.",
 		PersistentPreRunE: func(cmd *cobra.Command, _ []string) error {
 			// set the default command outputs
 			cmd.SetOut(cmd.OutOrStdout())

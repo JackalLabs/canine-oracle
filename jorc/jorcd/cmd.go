@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 
-	"github.com/JackalLabs/jackal-provider/jorc/utils"
+	"github.com/JackalLabs/jackal-oracle/jorc/utils"
 	"github.com/rs/zerolog"
 	"github.com/spf13/cobra"
 	tmcfg "github.com/tendermint/tendermint/config"
@@ -23,7 +23,7 @@ func Execute(rootCmd *cobra.Command, defaultHome string) error {
 	srvCtx := utils.NewDefaultContext()
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, client.ClientContextKey, &client.Context{})
-	ctx = context.WithValue(ctx, utils.ProviderContextKey, srvCtx)
+	ctx = context.WithValue(ctx, utils.OracleContextKey, srvCtx)
 
 	rootCmd.PersistentFlags().String(flags.FlagLogLevel, zerolog.InfoLevel.String(), "The logging level (trace|debug|info|warn|error|fatal|panic)")
 	rootCmd.PersistentFlags().String(flags.FlagLogFormat, tmcfg.LogFormatPlain, "The logging format (json|plain)")

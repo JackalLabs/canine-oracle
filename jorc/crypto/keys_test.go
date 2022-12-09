@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/JackalLabs/jackal-provider/jorc/crypto"
+	"github.com/JackalLabs/jackal-oracle/jorc/crypto"
 	"github.com/stretchr/testify/require"
 )
 

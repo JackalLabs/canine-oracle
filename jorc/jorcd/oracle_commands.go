@@ -7,8 +7,8 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/version"
 
-	"github.com/JackalLabs/jackal-provider/jorc/crypto"
-	"github.com/JackalLabs/jackal-provider/jorc/server"
+	"github.com/JackalLabs/jackal-oracle/jorc/crypto"
+	"github.com/JackalLabs/jackal-oracle/jorc/server"
 	"github.com/cosmos/cosmos-sdk/client"
 	clientConfig "github.com/cosmos/cosmos-sdk/client/config"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -29,7 +29,23 @@ func StartServerCommand() *cobra.Command {
 		Long:  `Start the Jackal Oracle with the current settings.`,
 		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			server.StartFileServer(cmd)
+			server.StartOracle(cmd)
+			return nil
+		},
+	}
+
+	AddTxFlagsToCmd(cmd)
+	return cmd
+}
+
+func InitOracleCommand() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "init",
+		Short: "Init jackal oracle",
+		Long:  `Initialize the Jackal Oracle with new settings.`,
+		Args:  cobra.ExactArgs(0),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			server.StartOracle(cmd)
 			return nil
 		},
 	}
@@ -41,8 +57,8 @@ func StartServerCommand() *cobra.Command {
 func NetworkCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "network",
-		Short: "Provider network commands",
-		Long:  `The sub-menu for Jackal Storage Provider network commands.`,
+		Short: "Oracle network commands",
+		Long:  `The sub-menu for Jackal Oracle network commands.`,
 	}
 
 	cmd.AddCommand(
@@ -55,8 +71,8 @@ func NetworkCmd() *cobra.Command {
 func ClientCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "client",
-		Short: "Provider client commands",
-		Long:  `The sub-menu for Jackal Storage Provider client commands.`,
+		Short: "Oracle client commands",
+		Long:  `The sub-menu for Jackal Oracle client commands.`,
 	}
 
 	cmd.AddCommand(
@@ -86,7 +102,7 @@ func GetBalanceCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "balance",
 		Short: "Get account balance",
-		Long:  `Get the account balance of the current storage provider key.`,
+		Long:  `Get the account balance of the current oracle key.`,
 		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -125,7 +141,7 @@ func GetAddressCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "address",
 		Short: "Get account address",
-		Long:  `Get the account address of the current storage provider key.`,
+		Long:  `Get the account address of the current oracle key.`,
 		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)

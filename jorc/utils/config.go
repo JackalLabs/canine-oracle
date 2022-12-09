@@ -28,7 +28,7 @@ type Context struct {
 	Logger tmlog.Logger
 }
 
-const ProviderContextKey = sdk.ContextKey("provider.context")
+const OracleContextKey = sdk.ContextKey("oracle.context")
 
 var configTemplate *template.Template
 
@@ -123,7 +123,7 @@ func interceptConfigs(rootViper *viper.Viper, customAppTemplate string, customCo
 }
 
 func GetServerContextFromCmd(cmd *cobra.Command) *Context {
-	if v := cmd.Context().Value(ProviderContextKey); v != nil {
+	if v := cmd.Context().Value(OracleContextKey); v != nil {
 		serverCtxPtr := v.(*Context)
 		return serverCtxPtr
 	}
@@ -132,7 +132,7 @@ func GetServerContextFromCmd(cmd *cobra.Command) *Context {
 }
 
 func SetCmdServerContext(cmd *cobra.Command, serverCtx *Context) error {
-	v := cmd.Context().Value(ProviderContextKey)
+	v := cmd.Context().Value(OracleContextKey)
 	if v == nil {
 		return errors.New("server context not set")
 	}
