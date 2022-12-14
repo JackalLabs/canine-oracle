@@ -1,13 +1,15 @@
 package server
 
 import (
+	"encoding/json"
 	"fmt"
-	"github.com/JackalLabs/jackal-oracle/jorc/crypto"
-	oracletypes "github.com/jackalLabs/canine-chain/x/oracle/types"
 	"io"
 	"net/http"
 	"runtime"
 	"time"
+
+	"github.com/JackalLabs/jackal-oracle/jorc/crypto"
+	oracletypes "github.com/jackalLabs/canine-chain/x/oracle/types"
 
 	"github.com/JackalLabs/jackal-oracle/jorc/utils"
 	"github.com/cosmos/cosmos-sdk/client"
@@ -63,10 +65,28 @@ func RunOracle(db *leveldb.DB, ctx *client.Context, cmd *cobra.Command) {
 			fmt.Println(err)
 		}
 
+		jsonMap := make(map[string](interface{}))
+		err = json.Unmarshal([]byte(b), &jsonMap)
+		if err != nil {
+			fmt.Printf("ERROR: fail to unmarshal json, %s\n", err.Error())
+		}
+
+		stringMap := make(map[string](string))
+		for k, v := range jsonMap {
+			stringMap[k] = fmt.Sprint(v)
+		}
+
+		m, err := json.Marshal(stringMap)
+		if err != nil {
+			fmt.Printf("ERROR: fail to marshal json, %s\n", err.Error())
+		}
+
+		fmt.Printf("Posting to %s: %s\n", name, string(m))
+
 		msg := oracletypes.NewMsgUpdateFeed(
 			address,
 			string(name),
-			string(b),
+			string(m),
 		)
 		if err := msg.ValidateBasic(); err != nil {
 			fmt.Println(err)

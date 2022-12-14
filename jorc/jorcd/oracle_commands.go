@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"context"
 	"fmt"
+
 	"github.com/JackalLabs/jackal-oracle/jorc/utils"
 	"github.com/syndtr/goleveldb/leveldb"
 
@@ -119,6 +120,50 @@ func SetOracleCommand() *cobra.Command {
 	return cmd
 }
 
+func GetOracleCommand() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "get-feed",
+		Short: "Get jackal oracle settings",
+		Long:  `Get the Jackal Oracle's current settings for runtime execution.`,
+		Args:  cobra.ExactArgs(0),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			path := utils.GetDataPath(clientCtx)
+
+			db, dberr := leveldb.OpenFile(path, nil)
+			if dberr != nil {
+				return dberr
+			}
+
+			name, err := db.Get([]byte("name"), nil)
+			if err != nil {
+				return err
+			}
+
+			api, err := db.Get([]byte("api"), nil)
+			if err != nil {
+				return err
+			}
+
+			interval, err := db.Get([]byte("interval"), nil)
+			if err != nil {
+				return err
+			}
+
+			fmt.Printf("%s from %s every %s seconds.\n", name, api, interval)
+
+			return nil
+
+		},
+	}
+
+	return cmd
+}
+
 func FeedCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "feed",
@@ -129,6 +174,7 @@ func FeedCmd() *cobra.Command {
 	cmd.AddCommand(
 		CreateOracleCommand(),
 		SetOracleCommand(),
+		GetOracleCommand(),
 	)
 
 	return cmd
