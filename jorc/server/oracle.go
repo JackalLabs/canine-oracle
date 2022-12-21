@@ -32,15 +32,11 @@ func RunOracle(db *leveldb.DB, ctx *client.Context, cmd *cobra.Command) {
 	}
 
 	for {
-		address, err := crypto.GetAddress(*ctx)
-		if err != nil {
-			panic(err)
-		}
 
-		res, err := db.Get([]byte("api"), nil)
+		apiLink, err := db.Get([]byte("api"), nil)
 		if err != nil {
 			fmt.Println(err)
-			fmt.Println("You most likely haven't ran `jorcd set-feed` yet.")
+			fmt.Println("No API link, have you ran `jorcd set-feed` yet.")
 			return
 		}
 
@@ -50,7 +46,7 @@ func RunOracle(db *leveldb.DB, ctx *client.Context, cmd *cobra.Command) {
 			return
 		}
 
-		r, err := http.Get(string(res))
+		r, err := http.Get(string(apiLink))
 		if err != nil {
 			fmt.Println(err)
 			fmt.Println("Missed a GET, will try again.")
@@ -59,44 +55,14 @@ func RunOracle(db *leveldb.DB, ctx *client.Context, cmd *cobra.Command) {
 
 		defer r.Body.Close()
 
-		b, err := io.ReadAll(r.Body)
-		// b, err := ioutil.ReadAll(resp.Body)  Go.1.15 and earlier
+		data, err := PrepareOracleData(r)
 		if err != nil {
 			fmt.Println(err)
 		}
 
-		jsonMap := make(map[string](interface{}))
-		err = json.Unmarshal([]byte(b), &jsonMap)
-		if err != nil {
-			fmt.Printf("ERROR: fail to unmarshal json, %s\n", err.Error())
-		}
+		fmt.Printf("Posting to %s: %s\n", name, string(data))
 
-		stringMap := make(map[string](string))
-		for k, v := range jsonMap {
-			stringMap[k] = fmt.Sprint(v)
-		}
-
-		m, err := json.Marshal(stringMap)
-		if err != nil {
-			fmt.Printf("ERROR: fail to marshal json, %s\n", err.Error())
-		}
-
-		fmt.Printf("Posting to %s: %s\n", name, string(m))
-
-		msg := oracletypes.NewMsgUpdateFeed(
-			address,
-			string(name),
-			string(m),
-		)
-		if err := msg.ValidateBasic(); err != nil {
-			fmt.Println(err)
-			return
-		}
-
-		_, err = utils.SendTx(*ctx, cmd.Flags(), msg)
-		if err != nil {
-			fmt.Println(err)
-		}
+		SendMsgUpdateFeed(ctx, cmd, name, data)
 
 		time.Sleep(t)
 	}
@@ -110,6 +76,7 @@ func StartOracle(cmd *cobra.Command) {
 	}
 
 	path := utils.GetDataPath(clientCtx)
+	fmt.Println("---->", path)
 
 	db, dberr := leveldb.OpenFile(path, nil)
 	if dberr != nil {
@@ -130,4 +97,51 @@ func StartOracle(cmd *cobra.Command) {
 	runtime.Goexit()
 
 	fmt.Println("Quit Oracle")
+}
+
+func PrepareOracleData(r *http.Response) ([]byte, error) {
+	b, err := io.ReadAll(r.Body)
+	// b, err := ioutil.ReadAll(resp.Body)  Go.1.15 and earlier
+	if err != nil {
+		return nil, err
+	}
+
+	jsonMap := make(map[string](interface{}))
+	err = json.Unmarshal([]byte(b), &jsonMap)
+	if err != nil {
+		return nil, fmt.Errorf("ERROR: fail to unmarshal json, %s\n", err.Error())
+	}
+
+	stringMap := make(map[string](string))
+	for k, v := range jsonMap {
+		stringMap[k] = fmt.Sprint(v)
+	}
+
+	m, err := json.Marshal(stringMap)
+	if err != nil {
+		return nil, fmt.Errorf("ERROR: fail to marshal json, %s\n", err.Error())
+	}
+	return m, nil
+}
+
+func SendMsgUpdateFeed(ctx *client.Context, cmd *cobra.Command, name []byte, data []byte) {
+	address, err := crypto.GetAddress(*ctx)
+	if err != nil {
+		panic(err)
+	}
+
+	msg := oracletypes.NewMsgUpdateFeed(
+		address,
+		string(name),
+		string(data),
+	)
+	if err := msg.ValidateBasic(); err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	_, err = utils.SendTx(*ctx, cmd.Flags(), msg)
+	if err != nil {
+		fmt.Println(err)
+	}
 }
