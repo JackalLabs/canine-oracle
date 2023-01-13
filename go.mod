@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/cosmos/cosmos-sdk v0.45.11
-	github.com/jackalLabs/canine-chain v1.2.0-alpha.8
+	github.com/jackalLabs/canine-chain v1.2.0-alpha.11
 	github.com/rs/zerolog v1.27.0
 	github.com/spf13/cobra v1.6.1
 	github.com/spf13/pflag v1.0.5
@@ -148,6 +148,9 @@ replace (
 
 	// use cosmos-flavored protobufs
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
+
+	github.com/tendermint/tendermint => github.com/informalsystems/tendermint v0.34.23
+	github.com/tendermint/tm-db => github.com/informalsystems/tm-db v0.6.7
 
 	// github.com/jackalLabs/canine-chain v1.2.0-alpha.1 => github.com/jackalLabs/canine-chain v1.2.0-alpha.1.0.20221118200331-8b5fcc0a4443
 	// use grpc compatible with cosmos-flavored protobufs
