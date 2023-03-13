@@ -138,6 +138,7 @@ require (
 replace (
 	// use cosmos keyring
 	github.com/99designs/keyring => github.com/cosmos/keyring v1.2.0
+	github.com/CosmWasm/wasmd => github.com/CosmosContracts/wasmd v0.29.2-patch.1
 
 	// dragonberry ics23 patch
 	github.com/confio/ics23/go => github.com/cosmos/cosmos-sdk/ics23/go v0.8.0
@@ -149,7 +150,7 @@ replace (
 	// use cosmos-flavored protobufs
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
 
-	github.com/tendermint/tendermint => github.com/informalsystems/tendermint v0.34.23
+	github.com/tendermint/tendermint => github.com/informalsystems/tendermint v0.34.24
 	github.com/tendermint/tm-db => github.com/informalsystems/tm-db v0.6.7
 	github.com/wealdtech/go-merkletree => github.com/TheMarstonConnell/go-merkletree v0.0.0-20230124030923-93fb10e701d7
 
