@@ -4,7 +4,7 @@ VERSION := $(shell echo $(shell git describe --tags) | sed 's/^v//')
 COMMIT := $(shell git log -1 --format='%H')
 LEDGER_ENABLED ?= true
 
-HTTPS_GIT := https://github.com/jackalLabs/canine-oracle.git
+HTTPS_GIT := https://github.com/TheMarstonConnell/DelphiHack.git
 
 export GO111MODULE = on
 
@@ -47,8 +47,8 @@ build_tags_comma_sep := $(subst $(empty),$(comma),$(build_tags))
 
 # process linker flags
 
-ldflags = -X github.com/cosmos/cosmos-sdk/version.Name=jorc \
-		  -X github.com/cosmos/cosmos-sdk/version.AppName=jorcd \
+ldflags = -X github.com/cosmos/cosmos-sdk/version.Name=jstore \
+		  -X github.com/cosmos/cosmos-sdk/version.AppName=jstored \
 		  -X github.com/cosmos/cosmos-sdk/version.Version=$(VERSION) \
 		  -X github.com/cosmos/cosmos-sdk/version.Commit=$(COMMIT) \
 		  -X "github.com/cosmos/cosmos-sdk/version.BuildTags=$(build_tags_comma_sep)"

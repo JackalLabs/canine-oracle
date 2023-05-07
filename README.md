@@ -14,28 +14,28 @@ This assumes you have either already set up a node or are using another RPC prov
 You must send tokens to the address that is generated from `gen-key` before starting your node.
 
 ```sh
-jorcd client config chain-id {current-chain-id}
+jstored client config chain-id {current-chain-id}
 
-jorcd client gen-key
+jstored client gen-key
 
-jorcd feed create {name}
+jstored feed create {name}
 
-jorcd feed set-feed {name} {api-link} {interval-seconds}
+jstored feed set-feed {name} {api-link} {interval-seconds}
 
-jorcd start
+jstored start
 ```
 
 For example, if we wanted an oracle to update the price of Jackal Tokens from Osmosis every 10 seconds, we could do so like this.
 ```sh
-jorcd client config chain-id jackal-1
+jstored client config chain-id jackal-1
 
-jorcd client gen-key
+jstored client gen-key
 
-jorcd feed create jklprice
+jstored feed create jklprice
 
-jorcd feed set-feed jklprice https://api-osmosis.imperator.co/tokens/v2/price/jkl 10
+jstored feed set-feed jklprice https://api-osmosis.imperator.co/tokens/v2/price/jkl 10
 
-jorcd start
+jstored start
 
 ```
 

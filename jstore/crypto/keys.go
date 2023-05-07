@@ -13,7 +13,7 @@ import (
 
 func KeyExists(ctx client.Context) bool {
 	configPath := filepath.Join(ctx.HomeDir, "config")
-	configFilePath := filepath.Join(configPath, "priv_orckey.json")
+	configFilePath := filepath.Join(configPath, "priv_jkey.json")
 
 	jsonFile, err := os.Open(configFilePath)
 	// if we os.Open returns an error then handle it
@@ -27,7 +27,7 @@ func KeyExists(ctx client.Context) bool {
 
 func WriteKey(ctx client.Context, key *StorPrivKey) error {
 	configPath := filepath.Join(ctx.HomeDir, "config")
-	configFilePath := filepath.Join(configPath, "priv_orckey.json")
+	configFilePath := filepath.Join(configPath, "priv_jkey.json")
 
 	data, err := json.Marshal(key)
 	if err != nil {
@@ -51,7 +51,7 @@ func GetAddress(ctx client.Context) (string, error) {
 
 func ReadKey(ctx client.Context) (*StorPrivKey, error) {
 	configPath := filepath.Join(ctx.HomeDir, "config")
-	configFilePath := filepath.Join(configPath, "priv_orckey.json")
+	configFilePath := filepath.Join(configPath, "priv_jkey.json")
 
 	jsonFile, err := os.Open(configFilePath)
 	// if we os.Open returns an error then handle it

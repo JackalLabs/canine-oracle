@@ -5,13 +5,10 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/JackalLabs/jackal-oracle/jorc/utils"
-	"github.com/syndtr/goleveldb/leveldb"
-
 	"github.com/cosmos/cosmos-sdk/version"
 
-	"github.com/JackalLabs/jackal-oracle/jorc/crypto"
-	"github.com/JackalLabs/jackal-oracle/jorc/server"
+	"github.com/TheMarstonConnell/DelphiHack/server/jstore/crypto"
+	"github.com/TheMarstonConnell/DelphiHack/server/jstore/server"
 	"github.com/cosmos/cosmos-sdk/client"
 	clientConfig "github.com/cosmos/cosmos-sdk/client/config"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -23,168 +20,29 @@ import (
 	stortypes "github.com/jackalLabs/canine-chain/x/storage/types"
 	"github.com/spf13/cobra"
 	tmcli "github.com/tendermint/tendermint/libs/cli"
-
-	oracletypes "github.com/jackalLabs/canine-chain/x/oracle/types"
 )
 
 func StartServerCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "start",
-		Short: "Start jackal oracle",
-		Long:  `Start the Jackal Oracle with the current settings.`,
+		Short: "Start jackal server",
+		Long:  `Start the Jackal Server with the current settings.`,
 		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			server.StartOracle(cmd)
+			server.StartServer(cmd)
 			return nil
 		},
 	}
 
 	AddTxFlagsToCmd(cmd)
-	return cmd
-}
-
-func CreateOracleCommand() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "create [name]",
-		Short: "Create jackal oracle",
-		Long:  `Create the Jackal Oracle with new settings.`,
-		Args:  cobra.ExactArgs(1),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientTxContext(cmd)
-			if err != nil {
-				return err
-			}
-
-			address, err := crypto.GetAddress(clientCtx)
-			if err != nil {
-				return err
-			}
-
-			msg := oracletypes.NewMsgCreateFeed(
-				address,
-				args[0],
-			)
-			if err := msg.ValidateBasic(); err != nil {
-				return err
-			}
-
-			_, err = utils.SendTx(clientCtx, cmd.Flags(), msg)
-			return err
-		},
-	}
-
-	AddTxFlagsToCmd(cmd)
-	return cmd
-}
-
-func SetOracleCommand() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "set-feed [name] [api] [interval]",
-		Short: "Set jackal oracle settings",
-		Long:  `Set the Jackal Oracle's settings for runtime execution.`,
-		Args:  cobra.ExactArgs(3),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientTxContext(cmd)
-			if err != nil {
-				return err
-			}
-
-			path := utils.GetDataPath(clientCtx)
-
-			db, dberr := leveldb.OpenFile(path, nil)
-			if dberr != nil {
-				return dberr
-			}
-
-			err = db.Put([]byte("name"), []byte(args[0]), nil)
-			if err != nil {
-				return err
-			}
-
-			err = db.Put([]byte("api"), []byte(args[1]), nil)
-			if err != nil {
-				return err
-			}
-
-			err = db.Put([]byte("interval"), []byte(args[2]), nil)
-			if err != nil {
-				return err
-			}
-
-			return nil
-
-		},
-	}
-
-	AddTxFlagsToCmd(cmd)
-	return cmd
-}
-
-func GetOracleCommand() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "get-feed",
-		Short: "Get jackal oracle settings",
-		Long:  `Get the Jackal Oracle's current settings for runtime execution.`,
-		Args:  cobra.ExactArgs(0),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientTxContext(cmd)
-			if err != nil {
-				return err
-			}
-
-			path := utils.GetDataPath(clientCtx)
-
-			db, dberr := leveldb.OpenFile(path, nil)
-			if dberr != nil {
-				return dberr
-			}
-
-			name, err := db.Get([]byte("name"), nil)
-			if err != nil {
-				return err
-			}
-
-			api, err := db.Get([]byte("api"), nil)
-			if err != nil {
-				return err
-			}
-
-			interval, err := db.Get([]byte("interval"), nil)
-			if err != nil {
-				return err
-			}
-
-			fmt.Printf("%s from %s every %s seconds.\n", name, api, interval)
-
-			return nil
-
-		},
-	}
-
-	return cmd
-}
-
-func FeedCmd() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "feed",
-		Short: "Oracle feed commands",
-		Long:  `The sub-menu for Jackal Oracle feed commands.`,
-	}
-
-	cmd.AddCommand(
-		CreateOracleCommand(),
-		SetOracleCommand(),
-		GetOracleCommand(),
-	)
-
 	return cmd
 }
 
 func NetworkCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "network",
-		Short: "Oracle network commands",
-		Long:  `The sub-menu for Jackal Oracle network commands.`,
+		Short: "Jackal network commands",
+		Long:  `The sub-menu for Jackal network commands.`,
 	}
 
 	cmd.AddCommand(
@@ -197,8 +55,8 @@ func NetworkCmd() *cobra.Command {
 func ClientCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "client",
-		Short: "Oracle client commands",
-		Long:  `The sub-menu for Jackal Oracle client commands.`,
+		Short: "Jackal client commands",
+		Long:  `The sub-menu for Jackal client commands.`,
 	}
 
 	cmd.AddCommand(
@@ -228,7 +86,7 @@ func GetBalanceCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "balance",
 		Short: "Get account balance",
-		Long:  `Get the account balance of the current oracle key.`,
+		Long:  `Get the account balance of the current key.`,
 		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -267,7 +125,7 @@ func GetAddressCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "address",
 		Short: "Get account address",
-		Long:  `Get the account address of the current oracle key.`,
+		Long:  `Get the account address of the current key.`,
 		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/JackalLabs/jackal-oracle/jorc/types"
-	"github.com/JackalLabs/jackal-oracle/jorc/utils"
+	"github.com/TheMarstonConnell/DelphiHack/server/jstore/types"
+	"github.com/TheMarstonConnell/DelphiHack/server/jstore/utils"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 
@@ -37,7 +37,7 @@ func NewRootCmd() *cobra.Command {
 		WithViper("")
 
 	rootCmd := &cobra.Command{
-		Use:   "jorcd",
+		Use:   "jstored",
 		Short: "Oracle Daemon (server)",
 		Long:  "Jackal Lab's implimentation of a Jackal Protocol Oracle system.",
 		PersistentPreRunE: func(cmd *cobra.Command, _ []string) error {
@@ -71,7 +71,6 @@ func NewRootCmd() *cobra.Command {
 		ClientCmd(),
 		VersionCmd(),
 		NetworkCmd(),
-		FeedCmd(),
 	)
 
 	return rootCmd

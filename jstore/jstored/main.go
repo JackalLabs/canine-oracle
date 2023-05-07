@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/JackalLabs/jackal-oracle/jorc/types"
+	"github.com/TheMarstonConnell/DelphiHack/server/jstore/types"
 )
 
 func main() {

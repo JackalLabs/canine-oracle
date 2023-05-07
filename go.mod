@@ -1,12 +1,15 @@
-module github.com/JackalLabs/jackal-oracle
+module github.com/TheMarstonConnell/DelphiHack/server
 
 go 1.19
 
 require (
+	github.com/JackalLabs/jackal-provider v0.0.0-00010101000000-000000000000
 	github.com/cosmos/cosmos-sdk v0.45.11
-	github.com/jackalLabs/canine-chain v1.2.0-beta.7
-	github.com/rs/zerolog v1.27.0
-	github.com/spf13/cobra v1.6.1
+	github.com/jackalLabs/canine-chain v1.2.0
+	github.com/julienschmidt/httprouter v1.3.0
+	github.com/rs/cors v1.9.0
+	github.com/rs/zerolog v1.29.1
+	github.com/spf13/cobra v1.7.0
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.14.0
 	github.com/stretchr/testify v1.8.2
@@ -61,7 +64,7 @@ require (
 	github.com/gogo/gateway v1.1.0 // indirect
 	github.com/gogo/protobuf v1.3.3 // indirect
 	github.com/golang/glog v1.0.0 // indirect
-	github.com/golang/protobuf v1.5.2 // indirect
+	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/google/btree v1.1.2 // indirect
 	github.com/google/go-cmp v0.5.9 // indirect
@@ -81,7 +84,7 @@ require (
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/hdevalence/ed25519consensus v0.0.0-20220222234857-c00d1f31bab3 // indirect
 	github.com/improbable-eng/grpc-web v0.15.0 // indirect
-	github.com/inconshreveable/mousetrap v1.0.1 // indirect
+	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/jmhodges/levigo v1.0.0 // indirect
 	github.com/klauspost/compress v1.15.15 // indirect
 	github.com/lib/pq v1.10.6 // indirect
@@ -106,7 +109,6 @@ require (
 	github.com/rakyll/statik v0.1.7 // indirect
 	github.com/rcrowley/go-metrics v0.0.0-20201227073835-cf1acfcdf475 // indirect
 	github.com/regen-network/cosmos-proto v0.3.1 // indirect
-	github.com/rs/cors v1.8.2 // indirect
 	github.com/sasha-s/go-deadlock v0.3.1 // indirect
 	github.com/spf13/afero v1.9.2 // indirect
 	github.com/spf13/cast v1.5.0 // indirect
@@ -122,7 +124,7 @@ require (
 	go.etcd.io/bbolt v1.3.6 // indirect
 	golang.org/x/crypto v0.6.0 // indirect
 	golang.org/x/exp v0.0.0-20230206171751-46f607a40771 // indirect
-	golang.org/x/net v0.6.0 // indirect
+	golang.org/x/net v0.7.0 // indirect
 	golang.org/x/sys v0.5.0 // indirect
 	golang.org/x/term v0.5.0 // indirect
 	golang.org/x/text v0.7.0 // indirect
@@ -139,6 +141,8 @@ replace (
 	// use cosmos keyring
 	github.com/99designs/keyring => github.com/cosmos/keyring v1.2.0
 	github.com/CosmWasm/wasmd => github.com/CosmosContracts/wasmd v0.29.2-patch.1
+
+	github.com/JackalLabs/jackal-provider => github.com/JackalLabs/canine-provider v1.0.7
 
 	// dragonberry ics23 patch
 	github.com/confio/ics23/go => github.com/cosmos/cosmos-sdk/ics23/go v0.8.0

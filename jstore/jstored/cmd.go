@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 
-	"github.com/JackalLabs/jackal-oracle/jorc/utils"
+	"github.com/TheMarstonConnell/DelphiHack/server/jstore/utils"
 	"github.com/rs/zerolog"
 	"github.com/spf13/cobra"
 	tmcfg "github.com/tendermint/tendermint/config"

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/JackalLabs/jackal-oracle/jorc/crypto"
+	"github.com/TheMarstonConnell/DelphiHack/server/jstore/crypto"
 	"github.com/stretchr/testify/require"
 )
 
