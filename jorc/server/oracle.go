@@ -99,6 +99,19 @@ func StartOracle(cmd *cobra.Command) {
 	fmt.Println("Quit Oracle")
 }
 
+type ChainExpects struct {
+	Price  string `json:"price"`
+	Change string `json:"24h_change"`
+}
+
+type CoinGecko struct {
+	Jackal JackalPrice `json:"jackal-protocol"`
+}
+
+type JackalPrice struct {
+	USD float64 `json:"usd"`
+}
+
 func PrepareOracleData(r *http.Response) ([]byte, error) {
 	b, err := io.ReadAll(r.Body)
 	// b, err := ioutil.ReadAll(resp.Body)  Go.1.15 and earlier
@@ -106,21 +119,22 @@ func PrepareOracleData(r *http.Response) ([]byte, error) {
 		return nil, err
 	}
 
-	jsonMap := make(map[string](interface{}))
-	err = json.Unmarshal([]byte(b), &jsonMap)
+	var jackal CoinGecko
+	err = json.Unmarshal(b, &jackal)
 	if err != nil {
 		return nil, fmt.Errorf("ERROR: fail to unmarshal json, %s\n", err.Error())
 	}
 
-	stringMap := make(map[string](string))
-	for k, v := range jsonMap {
-		stringMap[k] = fmt.Sprint(v)
+	ce := ChainExpects{
+		Change: "0.0",
+		Price:  fmt.Sprintf("%f", jackal.Jackal.USD),
 	}
 
-	m, err := json.Marshal(stringMap)
+	m, err := json.Marshal(ce)
 	if err != nil {
 		return nil, fmt.Errorf("ERROR: fail to marshal json, %s\n", err.Error())
 	}
+
 	return m, nil
 }
 

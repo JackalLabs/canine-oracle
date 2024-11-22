@@ -27,7 +27,7 @@ func SetUpTestDB() (*leveldb.DB, error) {
 		return nil, err
 	}
 
-	err = db.Put(apiKey, []byte("https://api-osmosis.imperator.co/tokens/v2/price/jkl"), nil)
+	err = db.Put(apiKey, []byte("https://api.coingecko.com/api/v3/simple/price?ids=jackal-protocol&vs_currencies=usd"), nil)
 	if err != nil {
 		return nil, err
 	}
